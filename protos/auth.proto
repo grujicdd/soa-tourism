@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+option csharp_namespace = "AuthService.Protos";
+package auth;
+
+// Auth Service - User authentication and profile management
+service AuthService {
+  // User Registration & Authentication
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  
+  // Profile Management
+  rpc GetProfile(GetProfileRequest) returns (ProfileResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (ProfileResponse);
+  
+  // Admin Functions
+  rpc GetAllUsers(GetAllUsersRequest) returns (UsersResponse);
+  rpc BlockUser(BlockUserRequest) returns (BlockUserResponse);
+  
+  // Token Validation (used by other services)
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  
+  // Helper for other services
+  rpc GetUserById(GetUserByIdRequest) returns (UserResponse);
+}
+
+// ============ Registration ============
+message RegisterRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4; // "guide" or "tourist"
+}
+
+message RegisterResponse {
+  bool success = 1;
+  string message = 2;
+  string userId = 3;
+}
+
+// ============ Login ============
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  bool success = 1;
+  string message = 2;
+  string token = 3;
+  string userId = 4;
+  string role = 5;
+}
+
+// ============ Profile ============
+message GetProfileRequest {
+  string userId = 1;
+}
+
+message UpdateProfileRequest {
+  string userId = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string profilePicture = 4;
+  string bio = 5;
+  string motto = 6;
+}
+
+message ProfileResponse {
+  bool success = 1;
+  string message = 2;
+  UserProfile profile = 3;
+}
+
+message UserProfile {
+  string userId = 1;
+  string username = 2;
+  string email = 3;
+  string role = 4;
+  string firstName = 5;
+  string lastName = 6;
+  string profilePicture = 7;
+  string bio = 8;
+  string motto = 9;
+  bool isBlocked = 10;
+}
+
+// ============ Admin Functions ============
+message GetAllUsersRequest {
+  string adminUserId = 1; // For authorization
+}
+
+message UsersResponse {
+  bool success = 1;
+  string message = 2;
+  repeated UserProfile users = 3;
+}
+
+message BlockUserRequest {
+  string adminUserId = 1;
+  string targetUserId = 2;
+  bool block = 3; // true = block, false = unblock
+}
+
+message BlockUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ============ Token Validation ============
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string userId = 2;
+  string username = 3;
+  string role = 4;
+  string message = 5;
+}
+
+// ============ Helper Methods ============
+message GetUserByIdRequest {
+  string userId = 1;
+}
+
+message UserResponse {
+  bool success = 1;
+  string message = 2;
+  UserProfile user = 3;
+}

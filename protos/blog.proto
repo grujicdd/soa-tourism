@@ -1,0 +1,179 @@
+syntax = "proto3";
+
+option csharp_namespace = "BlogService.Protos";
+package blog;
+
+// Blog Service - Blog posts, comments, likes, and follower system
+service BlogService {
+  // Blog Operations
+  rpc CreateBlog(CreateBlogRequest) returns (BlogResponse);
+  rpc GetBlogs(GetBlogsRequest) returns (BlogsResponse);
+  rpc GetBlogById(GetBlogByIdRequest) returns (BlogResponse);
+  
+  // Comment Operations
+  rpc AddComment(AddCommentRequest) returns (CommentResponse);
+  rpc GetComments(GetCommentsRequest) returns (CommentsResponse);
+  
+  // Like Operations
+  rpc LikeBlog(LikeBlogRequest) returns (LikeResponse);
+  rpc UnlikeBlog(UnlikeBlogRequest) returns (LikeResponse);
+  
+  // Follow System (Neo4j)
+  rpc FollowUser(FollowUserRequest) returns (FollowResponse);
+  rpc UnfollowUser(UnfollowUserRequest) returns (FollowResponse);
+  rpc IsFollowing(IsFollowingRequest) returns (IsFollowingResponse);
+  rpc GetFollowers(GetFollowersRequest) returns (FollowersResponse);
+  rpc GetFollowing(GetFollowingRequest) returns (FollowersResponse);
+  rpc GetFollowRecommendations(GetRecommendationsRequest) returns (RecommendationsResponse);
+}
+
+// ============ Blog Operations ============
+message CreateBlogRequest {
+  string userId = 1;
+  string username = 2;
+  string title = 3;
+  string description = 4; // Plain text, no markdown
+  repeated string images = 5; // Optional image URLs
+}
+
+message BlogResponse {
+  bool success = 1;
+  string message = 2;
+  BlogPost blog = 3;
+}
+
+message BlogPost {
+  string id = 1;
+  string userId = 2;
+  string username = 3;
+  string title = 4;
+  string description = 5;
+  repeated string images = 6;
+  string createdAt = 7;
+  int32 likeCount = 8;
+  int32 commentCount = 9;
+}
+
+message GetBlogsRequest {
+  string userId = 1; // To filter blogs from followed users
+  int32 skip = 2;
+  int32 limit = 3;
+}
+
+message GetBlogByIdRequest {
+  string blogId = 1;
+}
+
+message BlogsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated BlogPost blogs = 3;
+}
+
+// ============ Comment Operations ============
+message AddCommentRequest {
+  string blogId = 1;
+  string userId = 2;
+  string username = 3;
+  string text = 4;
+}
+
+message CommentResponse {
+  bool success = 1;
+  string message = 2;
+  Comment comment = 3;
+}
+
+message Comment {
+  string id = 1;
+  string blogId = 2;
+  string userId = 3;
+  string username = 4;
+  string text = 5;
+  string createdAt = 6;
+  string lastModified = 7;
+}
+
+message GetCommentsRequest {
+  string blogId = 1;
+}
+
+message CommentsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Comment comments = 3;
+}
+
+// ============ Like Operations ============
+message LikeBlogRequest {
+  string blogId = 1;
+  string userId = 2;
+}
+
+message UnlikeBlogRequest {
+  string blogId = 1;
+  string userId = 2;
+}
+
+message LikeResponse {
+  bool success = 1;
+  string message = 2;
+  int32 likeCount = 3;
+}
+
+// ============ Follow System ============
+message FollowUserRequest {
+  string followerId = 1; // User who is following
+  string followerUsername = 2;
+  string followeeId = 3; // User being followed
+  string followeeUsername = 4;
+}
+
+message UnfollowUserRequest {
+  string followerId = 1;
+  string followeeId = 2;
+}
+
+message FollowResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message IsFollowingRequest {
+  string followerId = 1;
+  string followeeId = 2;
+}
+
+message IsFollowingResponse {
+  bool isFollowing = 1;
+}
+
+message GetFollowersRequest {
+  string userId = 1;
+}
+
+message GetFollowingRequest {
+  string userId = 1;
+}
+
+message FollowersResponse {
+  bool success = 1;
+  string message = 2;
+  repeated UserInfo users = 3;
+}
+
+message UserInfo {
+  string userId = 1;
+  string username = 2;
+}
+
+message GetRecommendationsRequest {
+  string userId = 1;
+  int32 limit = 2; // Max recommendations to return
+}
+
+message RecommendationsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated UserInfo recommendations = 3;
+}

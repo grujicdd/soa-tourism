@@ -1,0 +1,289 @@
+syntax = "proto3";
+
+option go_package = "tourism-microservices/tour-service/proto";
+package tour;
+
+// Tour Service - Tour management, purchasing, and execution
+service TourService {
+  // Tour CRUD
+  rpc CreateTour(CreateTourRequest) returns (TourResponse);
+  rpc GetTours(GetToursRequest) returns (ToursResponse);
+  rpc GetTourById(GetTourByIdRequest) returns (TourResponse);
+  rpc PublishTour(PublishTourRequest) returns (TourResponse);
+  rpc GetMyTours(GetMyToursRequest) returns (ToursResponse);
+  
+  // KeyPoint Management
+  rpc AddKeyPoint(AddKeyPointRequest) returns (KeyPointResponse);
+  rpc GetKeyPoints(GetKeyPointsRequest) returns (KeyPointsResponse);
+  rpc UpdateKeyPoint(UpdateKeyPointRequest) returns (KeyPointResponse);
+  rpc DeleteKeyPoint(DeleteKeyPointRequest) returns (DeleteKeyPointResponse);
+  
+  // Position Simulator
+  rpc UpdatePosition(UpdatePositionRequest) returns (PositionResponse);
+  rpc GetCurrentPosition(GetPositionRequest) returns (PositionResponse);
+  
+  // Shopping Cart
+  rpc AddToCart(AddToCartRequest) returns (CartResponse);
+  rpc RemoveFromCart(RemoveFromCartRequest) returns (CartResponse);
+  rpc GetCart(GetCartRequest) returns (CartResponse);
+  rpc Checkout(CheckoutRequest) returns (CheckoutResponse);
+  
+  // Tour Execution
+  rpc StartTourExecution(StartExecutionRequest) returns (ExecutionResponse);
+  rpc CheckProximity(CheckProximityRequest) returns (ProximityResponse);
+  rpc CompleteTour(CompleteExecutionRequest) returns (ExecutionResponse);
+  rpc AbandonTour(AbandonExecutionRequest) returns (ExecutionResponse);
+  rpc GetExecution(GetExecutionRequest) returns (ExecutionResponse);
+}
+
+// ============ Tour Operations ============
+message CreateTourRequest {
+  string guideId = 1;
+  string name = 2;
+  string description = 3;
+  string difficulty = 4; // "easy", "medium", "hard"
+  repeated string tags = 5;
+}
+
+message TourResponse {
+  bool success = 1;
+  string message = 2;
+  Tour tour = 3;
+}
+
+message Tour {
+  string id = 1;
+  string guideId = 2;
+  string name = 3;
+  string description = 4;
+  string difficulty = 5;
+  repeated string tags = 6;
+  string status = 7; // "draft", "published"
+  double price = 8;
+  bool isPublished = 9;
+  string publishedAt = 10;
+  string createdAt = 11;
+}
+
+message GetToursRequest {
+  bool publishedOnly = 1;
+  string userId = 2; // Optional: filter by guide
+}
+
+message GetMyToursRequest {
+  string guideId = 1;
+}
+
+message GetTourByIdRequest {
+  string tourId = 1;
+  string userId = 2; // To check purchase status
+}
+
+message ToursResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Tour tours = 3;
+}
+
+message PublishTourRequest {
+  string tourId = 1;
+  string guideId = 2;
+  double price = 3;
+}
+
+// ============ KeyPoint Operations ============
+message AddKeyPointRequest {
+  string tourId = 1;
+  string guideId = 2; // For authorization
+  double latitude = 3;
+  double longitude = 4;
+  string name = 5;
+  string description = 6;
+  string image = 7;
+  int32 order = 8;
+}
+
+message KeyPointResponse {
+  bool success = 1;
+  string message = 2;
+  KeyPoint keyPoint = 3;
+}
+
+message KeyPoint {
+  string id = 1;
+  string tourId = 2;
+  double latitude = 3;
+  double longitude = 4;
+  string name = 5;
+  string description = 6;
+  string image = 7;
+  int32 order = 8;
+}
+
+message GetKeyPointsRequest {
+  string tourId = 1;
+  string userId = 2; // To check if user purchased tour
+}
+
+message KeyPointsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated KeyPoint keyPoints = 3;
+  bool isPurchased = 4; // Whether user can see all keypoints
+}
+
+message UpdateKeyPointRequest {
+  string keyPointId = 1;
+  string tourId = 2;
+  string guideId = 3; // For authorization
+  double latitude = 4;
+  double longitude = 5;
+  string name = 6;
+  string description = 7;
+  string image = 8;
+}
+
+message DeleteKeyPointRequest {
+  string keyPointId = 1;
+  string tourId = 2;
+  string guideId = 3; // For authorization
+}
+
+message DeleteKeyPointResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ============ Position Simulator ============
+message UpdatePositionRequest {
+  string touristId = 1;
+  double latitude = 2;
+  double longitude = 3;
+}
+
+message GetPositionRequest {
+  string touristId = 1;
+}
+
+message PositionResponse {
+  bool success = 1;
+  string message = 2;
+  Position position = 3;
+}
+
+message Position {
+  string touristId = 1;
+  double latitude = 2;
+  double longitude = 3;
+  string updatedAt = 4;
+}
+
+// ============ Shopping Cart ============
+message AddToCartRequest {
+  string touristId = 1;
+  string tourId = 2;
+}
+
+message RemoveFromCartRequest {
+  string touristId = 1;
+  string tourId = 2;
+}
+
+message GetCartRequest {
+  string touristId = 1;
+}
+
+message CartResponse {
+  bool success = 1;
+  string message = 2;
+  ShoppingCart cart = 3;
+}
+
+message ShoppingCart {
+  string touristId = 1;
+  repeated CartItem items = 2;
+  double totalPrice = 3;
+}
+
+message CartItem {
+  string tourId = 1;
+  string tourName = 2;
+  double price = 3;
+}
+
+message CheckoutRequest {
+  string touristId = 1;
+}
+
+message CheckoutResponse {
+  bool success = 1;
+  string message = 2;
+  repeated PurchaseToken tokens = 3;
+}
+
+message PurchaseToken {
+  string tourId = 1;
+  string token = 2;
+  string purchasedAt = 3;
+}
+
+// ============ Tour Execution ============
+message StartExecutionRequest {
+  string touristId = 1;
+  string tourId = 2;
+  double startLatitude = 3;
+  double startLongitude = 4;
+}
+
+message ExecutionResponse {
+  bool success = 1;
+  string message = 2;
+  TourExecution execution = 3;
+}
+
+message TourExecution {
+  string id = 1;
+  string touristId = 2;
+  string tourId = 3;
+  string status = 4; // "active", "completed", "abandoned"
+  string startedAt = 5;
+  string completedAt = 6;
+  string lastActivity = 7;
+  Position startPosition = 8;
+  repeated CompletedKeyPoint completedKeypoints = 9;
+}
+
+message CompletedKeyPoint {
+  string keypointId = 1;
+  string completedAt = 2;
+}
+
+message CheckProximityRequest {
+  string executionId = 1;
+  string touristId = 2;
+  double currentLatitude = 3;
+  double currentLongitude = 4;
+}
+
+message ProximityResponse {
+  bool success = 1;
+  string message = 2;
+  bool nearKeyPoint = 3;
+  KeyPoint nearbyKeyPoint = 4;
+  double distance = 5; // Distance in meters
+}
+
+message CompleteExecutionRequest {
+  string executionId = 1;
+  string touristId = 2;
+}
+
+message AbandonExecutionRequest {
+  string executionId = 1;
+  string touristId = 2;
+}
+
+message GetExecutionRequest {
+  string executionId = 1;
+  string touristId = 2;
+}
