@@ -14,7 +14,8 @@ var serviceSettings = builder.Configuration.GetSection("ServiceSettings").Get<Se
 
 // Register gRPC clients as singletons
 builder.Services.AddSingleton(new AuthGrpcClient(serviceSettings.AuthServiceUrl));
-// TODO: Add BlogGrpcClient and TourGrpcClient later
+builder.Services.AddSingleton(new TourGrpcClient(serviceSettings.TourServiceUrl));
+builder.Services.AddSingleton(new BlogGrpcClient(serviceSettings.BlogServiceUrl));
 
 // Configure CORS (for frontend)
 builder.Services.AddCors(options =>

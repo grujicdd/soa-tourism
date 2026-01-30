@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option go_package = "tourism-microservices/tour-service/proto";
+option csharp_namespace = "TourService.Protos";
 package tour;
 
 // Tour Service - Tour management, purchasing, and execution
