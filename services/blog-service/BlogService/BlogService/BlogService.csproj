@@ -20,9 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\..\..\protos\blog.proto" GrpcServices="Server">
-      <Link>Protos\blog.proto</Link>
-    </Protobuf>
+	<Protobuf Include="/src/protos/blog.proto" GrpcServices="Server" Condition="Exists('/src/protos/blog.proto')" />
+	<Protobuf Include="..\..\..\..\protos\blog.proto" GrpcServices="Server" Link="Protos\blog.proto" Condition="!Exists('/src/protos/blog.proto')" />
   </ItemGroup>
 
 </Project>

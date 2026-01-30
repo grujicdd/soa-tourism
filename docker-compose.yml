@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  # ============ Databases ============
+  
+  mongodb:
+    image: mongo:7.0
+    container_name: tourism-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - tourism-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5.15
+    container_name: tourism-neo4j
+    restart: always
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    environment:
+      - NEO4J_AUTH=neo4j/neo4j_password
+      - NEO4J_dbms_memory_pagecache_size=512M
+      - NEO4J_dbms_memory_heap_max__size=1G
+    volumes:
+      - neo4j-data:/data
+    networks:
+      - tourism-network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "neo4j_password", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============ Backend Services ============
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/AuthService/AuthService/Dockerfile
+    container_name: tourism-auth-service
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - DatabaseSettings__ConnectionString=mongodb://mongodb:27017
+      - DatabaseSettings__DatabaseName=auth-db
+      - JwtSettings__Secret=your-super-secret-jwt-key-change-in-production-minimum-32-characters-long
+      - JwtSettings__ExpiryHours=24
+      - ASPNETCORE_URLS=http://+:5001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - tourism-network
+
+  blog-service:
+    build:
+      context: .
+      dockerfile: services/blog-service/BlogService/BlogService/Dockerfile
+    container_name: tourism-blog-service
+    restart: always
+    ports:
+      - "5002:5002"
+    environment:
+      - DatabaseSettings__ConnectionString=mongodb://mongodb:27017
+      - DatabaseSettings__DatabaseName=blog-db
+      - Neo4jSettings__Uri=bolt://neo4j:7687
+      - Neo4jSettings__User=neo4j
+      - Neo4jSettings__Password=neo4j_password
+      - ServiceSettings__AuthServiceUrl=http://auth-service:5001
+      - ASPNETCORE_URLS=http://+:5002
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    networks:
+      - tourism-network
+
+  tour-service:
+    build:
+      context: .
+      dockerfile: services/tour-service/Dockerfile
+    container_name: tourism-tour-service
+    restart: always
+    ports:
+      - "5003:5003"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - MONGO_DATABASE=tour-db
+      - SERVER_PORT=5003
+      - AUTH_SERVICE_URL=auth-service:5001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    networks:
+      - tourism-network
+
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Gateway/Gateway/Dockerfile
+    container_name: tourism-gateway
+    restart: always
+    ports:
+      - "8080:5000"
+    environment:
+      - ServiceSettings__AuthServiceUrl=http://auth-service:5001
+      - ServiceSettings__BlogServiceUrl=http://blog-service:5002
+      - ServiceSettings__TourServiceUrl=http://tour-service:5003
+      - JwtSettings__Secret=your-super-secret-jwt-key-change-in-production-minimum-32-characters-long
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+    depends_on:
+      - auth-service
+      - blog-service
+      - tour-service
+    networks:
+      - tourism-network
+
+# ============ Networks ============
+networks:
+  tourism-network:
+    driver: bridge
+
+# ============ Volumes ============
+volumes:
+  mongodb-data:
+  neo4j-data:
+

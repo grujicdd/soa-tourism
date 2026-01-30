@@ -28,15 +28,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Protobuf Include="..\..\..\..\protos\auth.proto" GrpcServices="Client">
-	    <Link>Protos\auth.proto</Link>
-	  </Protobuf>
-	  <Protobuf Include="..\..\..\..\protos\blog.proto" GrpcServices="Client">
-	    <Link>Protos\blog.proto</Link>
-	  </Protobuf>
-	  <Protobuf Include="..\..\..\..\protos\tour.proto" GrpcServices="Client">
-	    <Link>Protos\tour.proto</Link>
-	  </Protobuf>
+		<!-- Docker paths (when /src/protos/ exists) -->
+		<Protobuf Include="/src/protos/auth.proto" GrpcServices="Client" Condition="Exists('/src/protos/auth.proto')" />
+		<Protobuf Include="/src/protos/blog.proto" GrpcServices="Client" Condition="Exists('/src/protos/blog.proto')" />
+		<Protobuf Include="/src/protos/tour.proto" GrpcServices="Client" Condition="Exists('/src/protos/tour.proto')" />
+
+		<!-- Local Visual Studio paths (fallback) -->
+		<Protobuf Include="..\..\..\..\protos\auth.proto" GrpcServices="Client" Link="Protos\auth.proto" Condition="!Exists('/src/protos/auth.proto')" />
+		<Protobuf Include="..\..\..\..\protos\blog.proto" GrpcServices="Client" Link="Protos\blog.proto" Condition="!Exists('/src/protos/blog.proto')" />
+		<Protobuf Include="..\..\..\..\protos\tour.proto" GrpcServices="Client" Link="Protos\tour.proto" Condition="!Exists('/src/protos/tour.proto')" />
 	</ItemGroup>
 
 </Project>

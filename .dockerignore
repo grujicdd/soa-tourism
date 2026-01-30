@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.vs/
+**/.vscode/
+**/*.user
+**/secrets.json
+.git/
+.gitignore
+README.md
+*.md
