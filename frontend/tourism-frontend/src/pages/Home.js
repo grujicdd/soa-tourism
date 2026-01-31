@@ -1,61 +1,74 @@
 import React from 'react';
+import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Home.css';
 
 function Home() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const { user } = useAuth();
 
   return (
-    <div className="home-container">
-      <header className="home-header">
-        <h1>Tourism App</h1>
-        <div className="user-info">
-          <span>Welcome, <strong>{user.username}</strong></span>
-          <span className="role-badge">{user.role}</span>
-          <button onClick={handleLogout} className="btn-logout">Logout</button>
+    <Layout>
+      <div className="home-dashboard">
+        <div className="welcome-section">
+          <h1>Welcome back, {user.username}! 👋</h1>
+          <p>You're logged in as a <strong>{user.role}</strong></p>
         </div>
-      </header>
-      
-      <main className="home-content">
-        <div className="welcome-card">
-          <h2>🎉 Successfully Logged In!</h2>
-          <p>Your account is set up and ready to go.</p>
-          
-          <div className="user-details">
-            <p><strong>User ID:</strong> {user.userId}</p>
-            <p><strong>Username:</strong> {user.username}</p>
-            <p><strong>Role:</strong> {user.role}</p>
-          </div>
-          
-          <div className="feature-preview">
-            <h3>Coming Soon:</h3>
-            <ul>
-              {user.role === 'guide' ? (
-                <>
-                  <li>✨ Create and manage tours</li>
-                  <li>📍 Add key points to your tours</li>
-                  <li>📝 Write blog posts about your experiences</li>
-                </>
-              ) : (
-                <>
-                  <li>🗺️ Browse and purchase tours</li>
-                  <li>🚶 Execute tours with GPS tracking</li>
-                  <li>📝 Write blogs and follow other users</li>
-                  <li>🛒 Manage your shopping cart</li>
-                </>
-              )}
-            </ul>
+
+        <div className="quick-actions">
+          <h2>Quick Actions</h2>
+          <div className="action-cards">
+            {user.role === 'guide' ? (
+              <>
+                <Link to="/create-tour" className="action-card">
+                  <span className="card-icon">➕</span>
+                  <h3>Create New Tour</h3>
+                  <p>Design and publish a new tour</p>
+                </Link>
+                
+                <Link to="/my-tours" className="action-card">
+                  <span className="card-icon">📋</span>
+                  <h3>My Tours</h3>
+                  <p>Manage your existing tours</p>
+                </Link>
+                
+                <Link to="/blogs" className="action-card">
+                  <span className="card-icon">✍️</span>
+                  <h3>Write Blog</h3>
+                  <p>Share your experiences</p>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/tours" className="action-card">
+                  <span className="card-icon">🗺️</span>
+                  <h3>Browse Tours</h3>
+                  <p>Discover amazing tours</p>
+                </Link>
+                
+                <Link to="/cart" className="action-card">
+                  <span className="card-icon">🛒</span>
+                  <h3>Shopping Cart</h3>
+                  <p>View your cart and checkout</p>
+                </Link>
+                
+                <Link to="/blogs" className="action-card">
+                  <span className="card-icon">📝</span>
+                  <h3>Blogs</h3>
+                  <p>Read and write blogs</p>
+                </Link>
+                
+                <Link to="/my-executions" className="action-card">
+                  <span className="card-icon">🚶</span>
+                  <h3>My Tours</h3>
+                  <p>View your active tours</p>
+                </Link>
+              </>
+            )}
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }
 
