@@ -7,6 +7,9 @@ import Home from './pages/Home';
 import Tours from './pages/Tours';
 import CreateTour from './pages/CreateTour';
 import MyTours from './pages/MyTours';
+import Cart from './pages/Cart';
+import Blogs from './pages/Blogs';
+import KeyPoints from './pages/KeyPoints';
 
 // Protected Route component
 function ProtectedRoute({ children, requireGuide, requireTourist }) {
@@ -84,6 +87,25 @@ function App() {
           <Route path="/tours" element={
             <ProtectedRoute requireTourist>
               <Tours />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/cart" element={
+            <ProtectedRoute requireTourist>
+              <Cart />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/tour/:tourId/keypoints" element={
+            <ProtectedRoute requireGuide>
+              <KeyPoints />
+            </ProtectedRoute>
+          } />
+          
+          {/* Protected Routes - All Users */}
+          <Route path="/blogs" element={
+            <ProtectedRoute>
+              <Blogs />
             </ProtectedRoute>
           } />
           

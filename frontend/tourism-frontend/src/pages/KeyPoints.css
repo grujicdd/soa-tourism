@@ -1,0 +1,157 @@
+.keypoints-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.tour-name {
+  color: #667eea;
+  font-weight: 600;
+  margin: 5px 0 0 0;
+}
+
+.keypoints-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.add-keypoint-section,
+.keypoints-list-section {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.add-keypoint-section h2,
+.keypoints-list-section h2 {
+  margin: 0 0 25px 0;
+  color: #333;
+}
+
+.keypoint-form .form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 15px;
+}
+
+.keypoint-form .form-group {
+  margin-bottom: 20px;
+}
+
+.helper-box {
+  background: #f8f9ff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border-left: 4px solid #667eea;
+}
+
+.helper-box h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.helper-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.helper-box li {
+  margin-bottom: 8px;
+}
+
+.helper-box a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.helper-box a:hover {
+  text-decoration: underline;
+}
+
+.keypoints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.keypoint-card {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.keypoint-card:hover {
+  border-color: #667eea;
+}
+
+.kp-order {
+  background: #667eea;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.kp-content {
+  flex: 1;
+}
+
+.kp-content h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.kp-content p {
+  margin: 0 0 10px 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.kp-coords {
+  font-size: 13px;
+  color: #888;
+  font-family: monospace;
+}
+
+.kp-image {
+  margin-top: 10px;
+}
+
+.kp-image img {
+  max-width: 100%;
+  border-radius: 8px;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+@media (max-width: 1200px) {
+  .keypoints-container {
+    grid-template-columns: 1fr;
+  }
+}

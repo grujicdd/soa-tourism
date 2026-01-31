@@ -246,20 +246,27 @@ func (h *TourServiceHandler) GetKeyPoints(ctx context.Context, req *pb.GetKeyPoi
 		}, nil
 	}
 
-	// Check if user has purchased the tour
-	isPurchased := false
-	if req.UserId != "" {
-		isPurchased, _ = h.repo.HasPurchased(ctx, req.UserId, tourID)
-	}
+	// Get the tour to check if user is the guide
+tour, _ := h.repo.GetTourByID(ctx, tourID)
 
-	// If not purchased, only return first keypoint
+	// Check if user has purchased the tour OR is the guide
+	isPurchased := false
+	isOwner := false
+	if req.UserId != "" {
+	    isPurchased, _ = h.repo.HasPurchased(ctx, req.UserId, tourID)
+	    if tour != nil {
+	        isOwner = tour.GuideID == req.UserId
+	    }
+	}
+	
+	// If not purchased AND not the owner, only return first keypoint
 	protoKeypoints := make([]*pb.KeyPoint, 0)
-	if !isPurchased && len(keypoints) > 0 {
-		protoKeypoints = append(protoKeypoints, mapKeyPointToProto(keypoints[0]))
+	if !isPurchased && !isOwner && len(keypoints) > 0 {
+	    protoKeypoints = append(protoKeypoints, mapKeyPointToProto(keypoints[0]))
 	} else {
-		for _, kp := range keypoints {
-			protoKeypoints = append(protoKeypoints, mapKeyPointToProto(kp))
-		}
+	    for _, kp := range keypoints {
+	        protoKeypoints = append(protoKeypoints, mapKeyPointToProto(kp))
+	    }
 	}
 
 	return &pb.KeyPointsResponse{
