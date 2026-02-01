@@ -7,33 +7,34 @@ import './MyExecutions.css';
 
 function MyExecutions() {
   const [purchasedTours, setPurchasedTours] = useState([]);
+  const [activeExecutions, setActiveExecutions] = useState({}); // Add this
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const fetchPurchasedTours = useCallback(async () => {
-    try {
-      // Get all published tours
-      const response = await tourAPI.getTours(true);
-      if (response.data.success) {
-        // Filter to show only tours we can access keypoints for (purchased)
-        const toursWithAccess = [];
-        
-        for (const tour of response.data.tours) {
-          const kpResponse = await tourAPI.getKeyPoints(tour.id, user.userId);
-          if (kpResponse.data.isPurchased) {
-            toursWithAccess.push(tour);
-          }
+  try {
+    // Get all published tours
+    const response = await tourAPI.getTours(true);
+    if (response.data.success) {
+      // Filter to show only tours we can access keypoints for (purchased)
+      const toursWithAccess = [];
+      
+      for (const tour of response.data.tours) {
+        const kpResponse = await tourAPI.getKeyPoints(tour.id, user.userId);
+        if (kpResponse.data.isPurchased) {
+          toursWithAccess.push(tour);
         }
-        
-        setPurchasedTours(toursWithAccess);
       }
-    } catch (err) {
-      console.error('Failed to load purchased tours:', err);
-    } finally {
-      setLoading(false);
+      
+      setPurchasedTours(toursWithAccess);
     }
-  }, [user.userId]);
+  } catch (err) {
+    console.error('Failed to load purchased tours:', err);
+  } finally {
+    setLoading(false);
+  }
+}, [user.userId]);
 
   useEffect(() => {
     fetchPurchasedTours();
@@ -120,7 +121,7 @@ function MyExecutions() {
                     onClick={() => handleStartTour(tour)}
                     className="btn-start"
                   >
-                    Start Tour 🚶
+                    Start / Continue Tour 🚶
                   </button>
                 </div>
               </div>

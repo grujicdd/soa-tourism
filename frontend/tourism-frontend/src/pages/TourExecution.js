@@ -108,33 +108,55 @@ function TourExecution() {
     try {
       const response = await tourAPI.checkProximity(executionId, {
         touristId: user.userId,
-        currentLatitude: currentPosition.lat,
-        currentLongitude: currentPosition.lng
+        latitude: currentPosition.lat,      // ✅ Correct - matches DTO
+        longitude: currentPosition.lng      // ✅ Correct - matches DTO
       });
 
       console.log('Proximity check response:', response.data);
 
-      
-      if (response.data.success && response.data.nearKeypoint) {
-        console.log('Near keypoint!', response.data.nearbyKeypoint);
-        setNearbyKeypoint(response.data.nearbyKeypoint);
+      console.log('Proximity check response:', response.data);
+      console.log('nearKeyPoint value:', response.data.nearKeyPoint);
+      console.log('nearbyKeyPoint value:', response.data.nearbyKeyPoint);
+      console.log('Type check - success:', typeof response.data.success, response.data.success);
+      console.log('Type check - nearKeyPoint:', typeof response.data.nearKeyPoint, response.data.nearKeyPoint);
+      if (response.data.success && response.data.nearKeyPoint) {  // Capital K!
+        console.log('=== NEAR KEYPOINT DETECTED ===');
+        console.log('Nearby keypoint:', response.data.nearbyKeyPoint);  // Capital K!
+        console.log('Current execution completedKeypoints:', execution.completedKeypoints);
         
-        // Update execution with new completed keypoint
-        if (response.data.nearbyKeypoint) {
-          setExecution(prev => ({
+        setNearbyKeypoint(response.data.nearbyKeyPoint);  // Capital K!
+        
+        // Update execution state immediately
+        setExecution(prev => {
+          console.log('Previous execution state:', prev);
+          
+          // Check if already completed
+          const alreadyCompleted = prev.completedKeypoints.some(
+            kp => kp.keypointId === response.data.nearbyKeyPoint.id  // Capital K!
+          );
+          
+          console.log('Already completed?', alreadyCompleted);
+          
+          if (alreadyCompleted) {
+            console.log('Skipping - already marked as complete');
+            return prev;
+          }
+          
+          // Add new completed keypoint
+          const updated = {
             ...prev,
             completedKeypoints: [
               ...prev.completedKeypoints,
               {
-                keypointId: response.data.nearbyKeypoint.id,
+                keypointId: response.data.nearbyKeyPoint.id,  // Capital K!
                 completedAt: new Date().toISOString()
               }
             ]
-          }));
-        }
-      } else {
-        console.log('Not near any keypoint');
-        setNearbyKeypoint(null);
+          };
+          
+          console.log('Updated execution state:', updated);
+          return updated;
+        });
       }
     } catch (err) {
       console.error('Error checking proximity:', err);
@@ -204,7 +226,7 @@ function TourExecution() {
   if (loading) return <Layout><div className="loading">Loading tour...</div></Layout>;
   if (!execution || !tour) return <Layout><div className="error">Tour not found</div></Layout>;
 
-  const completedKeypointIds = execution.completedKeypoints.map(kp => kp.keypointId);
+  const completedKeypointIds = execution?.completedKeypoints?.map(kp => kp.keypointId) || [];
   const completedCount = completedKeypointIds.length;
   const totalCount = keypoints.length;
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;

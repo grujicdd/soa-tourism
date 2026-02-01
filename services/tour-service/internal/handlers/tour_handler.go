@@ -625,6 +625,19 @@ func (h *TourServiceHandler) StartTourExecution(ctx context.Context, req *pb.Sta
 		}, nil
 	}
 
+	// Check if there's already an active execution for this tour
+	existingExecution, err := h.repo.GetActiveExecution(ctx, req.TouristId, tourID)
+	if err == nil && existingExecution != nil {
+		// Active execution already exists, return it instead of creating new one
+		log.Printf("Active execution already exists for tourist %s and tour %s", req.TouristId, tourID.Hex())
+		return &pb.ExecutionResponse{
+			Success:   true,
+			Message:   "Continuing existing tour execution",
+			Execution: mapExecutionToProto(existingExecution),
+		}, nil
+	}
+
+	// Create new execution
 	execution := &models.TourExecution{
 		TouristID:      req.TouristId,
 		TourID:         tourID,
@@ -698,6 +711,9 @@ func (h *TourServiceHandler) CheckProximity(ctx context.Context, req *pb.CheckPr
 
 		// Calculate distance
 		distance := calculateDistance(req.CurrentLatitude, req.CurrentLongitude, kp.Latitude, kp.Longitude)
+		log.Printf("Distance check - Tourist: (%.6f, %.6f), Keypoint '%s': (%.6f, %.6f), Distance: %.2f meters", 
+    			req.CurrentLatitude, req.CurrentLongitude, kp.Name, kp.Latitude, kp.Longitude, distance)
+
 
 		// If within 50 meters
 		if distance <= 50 {

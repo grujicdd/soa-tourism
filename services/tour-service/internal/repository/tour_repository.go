@@ -273,3 +273,34 @@ func (r *TourRepository) UpdateExecution(ctx context.Context, execution *models.
 	)
 	return err
 }
+
+func (r *TourRepository) GetActiveExecution(ctx context.Context, touristID string, tourID primitive.ObjectID) (*models.TourExecution, error) {
+	var execution models.TourExecution
+	err := r.executionCollection.FindOne(ctx, bson.M{
+		"touristId": touristID,
+		"tourId":    tourID,
+		"status":    "active",
+	}).Decode(&execution)
+	
+	if err != nil {
+		return nil, err
+	}
+	return &execution, nil
+}
+
+func (r *TourRepository) GetExecutionsByTouristID(ctx context.Context, touristID string) ([]*models.TourExecution, error) {
+	cursor, err := r.executionCollection.Find(ctx, bson.M{
+		"touristId": touristID,
+		"status":    "active", // Only active executions
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var executions []*models.TourExecution
+	if err = cursor.All(ctx, &executions); err != nil {
+		return nil, err
+	}
+	return executions, nil
+}
