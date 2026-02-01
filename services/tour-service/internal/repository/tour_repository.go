@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type TourRepository struct {
@@ -149,17 +150,15 @@ func (r *TourRepository) DeleteKeyPoint(ctx context.Context, keypointID primitiv
 
 func (r *TourRepository) UpsertPosition(ctx context.Context, position *models.Position) error {
 	position.UpdatedAt = time.Now()
-
+	
+	// Use upsert option to insert if not found
+	opts := options.Update().SetUpsert(true)
 	_, err := r.positionCollection.UpdateOne(
 		ctx,
 		bson.M{"touristId": position.TouristID},
 		bson.M{"$set": position},
-		nil,
+		opts,
 	)
-	if err != nil {
-		// If not found, insert
-		_, err = r.positionCollection.InsertOne(ctx, position)
-	}
 	return err
 }
 

@@ -11,6 +11,9 @@ import Cart from './pages/Cart';
 import Blogs from './pages/Blogs';
 import KeyPoints from './pages/KeyPoints';
 import Profile from './pages/Profile';
+import PositionSimulator from './pages/PositionSimulator';
+import MyExecutions from './pages/MyExecutions';
+import TourExecution from './pages/TourExecution';
 
 // Protected Route component
 function ProtectedRoute({ children, requireGuide, requireTourist }) {
@@ -106,6 +109,24 @@ function App() {
           <Route path="/tour/:tourId/keypoints" element={
             <ProtectedRoute requireGuide>
               <KeyPoints />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/position-simulator" element={
+            <ProtectedRoute requireTourist>
+              <PositionSimulator />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/my-executions" element={
+            <ProtectedRoute requireTourist>
+              <MyExecutions />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/tour-execution/:executionId" element={
+            <ProtectedRoute requireTourist>
+              <TourExecution />
             </ProtectedRoute>
           } />
           

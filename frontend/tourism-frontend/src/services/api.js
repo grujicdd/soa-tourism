@@ -52,6 +52,8 @@ export const tourAPI = {
   checkout: (touristId) => api.post(`/tour/cart/${touristId}/checkout`),
   
   // Tour execution
+  getExecution: (executionId, touristId) => 
+    api.get(`/tour/executions/${executionId}?touristId=${touristId}`),
   startExecution: (tourId, data) => api.post(`/tour/${tourId}/execute`, data),
   checkProximity: (executionId, data) => api.post(`/tour/executions/${executionId}/proximity`, data),
   completeTour: (executionId, touristId) => api.post(`/tour/executions/${executionId}/complete`, JSON.stringify(touristId)),

@@ -30,6 +30,7 @@ function Navbar() {
           <>
             <Link to="/tours">Browse Tours</Link>
             <Link to="/cart">Cart</Link>
+            <Link to="/position-simulator">Position</Link>
             <Link to="/my-executions">My Tours</Link>
           </>
         )}
