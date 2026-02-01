@@ -10,6 +10,7 @@ import MyTours from './pages/MyTours';
 import Cart from './pages/Cart';
 import Blogs from './pages/Blogs';
 import KeyPoints from './pages/KeyPoints';
+import Profile from './pages/Profile';
 
 // Protected Route component
 function ProtectedRoute({ children, requireGuide, requireTourist }) {
@@ -67,6 +68,12 @@ function App() {
           <Route path="/" element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } />
           
