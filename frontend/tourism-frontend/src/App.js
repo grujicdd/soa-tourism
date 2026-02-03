@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import PositionSimulator from './pages/PositionSimulator';
 import MyExecutions from './pages/MyExecutions';
 import TourExecution from './pages/TourExecution';
+import Follow from './pages/Follow';
 
 // Protected Route component
 function ProtectedRoute({ children, requireGuide, requireTourist }) {
@@ -77,6 +78,12 @@ function App() {
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/follow" element={
+            <ProtectedRoute>
+              <Follow />
             </ProtectedRoute>
           } />
           

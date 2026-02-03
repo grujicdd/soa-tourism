@@ -36,6 +36,7 @@ function Navbar() {
         )}
         
         <Link to="/blogs">Blogs</Link>
+        <Link to="/follow">Follow</Link>
         <Link to="/profile">Profile</Link>
       </div>
       
