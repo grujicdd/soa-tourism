@@ -339,18 +339,7 @@ function TourExecution() {
             </div>
 
             <div className="actions-card">
-              <button 
-                onClick={() => {
-                  console.log('=== DEBUG INFO ===');
-                  console.log('Keypoints:', keypoints);
-                  console.log('Current Position:', currentPosition);
-                  console.log('Execution:', execution);
-                  console.log('Completed Keypoints:', execution?.completedKeypoints);
-                }}
-                className="btn-secondary"
-              >
-                Debug Info
-              </button>
+            
 
               <button 
                 onClick={handleUpdatePosition}

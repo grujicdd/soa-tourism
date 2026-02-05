@@ -85,12 +85,7 @@ function Tours() {
                 <div className="tour-footer">
                   <span className="tour-price">${tour.price.toFixed(2)}</span>
                   <div className="tour-actions">
-                    <button 
-                      onClick={() => handleViewDetails(tour.id)}
-                      className="btn-secondary"
-                    >
-                      View Details
-                    </button>
+                  
                     <button 
                       onClick={() => handleAddToCart(tour.id)}
                       className="btn-primary"

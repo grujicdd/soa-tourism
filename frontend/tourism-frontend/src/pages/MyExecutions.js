@@ -128,16 +128,6 @@ function MyExecutions() {
             ))}
           </div>
         )}
-
-        <div className="info-box">
-          <h3>💡 Before starting a tour:</h3>
-          <ul>
-            <li>Make sure you've set your position in the Position Simulator</li>
-            <li>Have your map ready to navigate between key points</li>
-            <li>The system will check your proximity every 10 seconds</li>
-            <li>You'll be notified when you're near a key point!</li>
-          </ul>
-        </div>
       </div>
     </Layout>
   );

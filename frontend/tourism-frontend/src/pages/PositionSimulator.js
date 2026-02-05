@@ -203,25 +203,6 @@ function PositionSimulator() {
               {saving ? 'Saving...' : 'Save Position'}
             </button>
 
-            <div className="info-box">
-              <h4>ℹ️ How it works</h4>
-              <ul>
-                <li>Click anywhere on the map to set your position</li>
-                <li>Or enter coordinates manually</li>
-                <li>Save your position before starting a tour</li>
-                <li>The system will use this to check proximity to key points</li>
-              </ul>
-            </div>
-
-            <div className="quick-locations">
-              <h4>📍 Quick Locations</h4>
-              <button onClick={() => setPosition({ lat: 44.8176, lng: 20.4569 })} className="btn-location">
-                Kalemegdan Fortress
-              </button>
-              <button onClick={() => setPosition({ lat: 44.8125, lng: 20.4612 })} className="btn-location">
-                Knez Mihailova Street
-              </button>
-            </div>
           </div>
         </div>
       </div>
