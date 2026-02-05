@@ -231,7 +231,7 @@ function Profile() {
           )}
         </div>
 
-        <div className="account-info">
+        {/* <div className="account-info">
           <h3>Account Information</h3>
           <div className="info-grid">
             <div className="info-item">
@@ -253,7 +253,7 @@ function Profile() {
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Layout>
   );

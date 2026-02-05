@@ -1,9 +1,9 @@
 .blogs-page {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
-.create-blog-section {
+.create-blog-card {
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -11,33 +11,109 @@
   margin-bottom: 30px;
 }
 
-.create-blog-section h2 {
-  margin: 0 0 25px 0;
+.create-blog-card h2 {
+  margin: 0 0 20px 0;
   color: #333;
 }
 
-.blog-form .form-group {
+.blogs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.blog-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s;
+}
+
+.blog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.info-box {
-  background: #f8f9ff;
-  padding: 25px;
-  border-radius: 12px;
-  border-left: 4px solid #667eea;
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.info-box h3 {
-  margin: 0 0 15px 0;
+.author-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.author-name {
+  margin: 0;
+  font-size: 16px;
   color: #333;
 }
 
-.info-box ul {
+.blog-date {
   margin: 0;
-  padding-left: 20px;
-  color: #666;
+  font-size: 13px;
+  color: #999;
 }
 
-.info-box li {
-  margin-bottom: 8px;
+.blog-title {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.blog-content {
+  margin: 0 0 20px 0;
+  color: #555;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.blog-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.blog-images img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.blog-footer {
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.blog-stats {
+  display: flex;
+  gap: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
 }
