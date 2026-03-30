@@ -16,10 +16,10 @@ import (
 
 type TourServiceHandler struct {
 	pb.UnimplementedTourServiceServer
-	repo *repository.TourRepository
+	repo repository.TourRepositoryInterface
 }
 
-func NewTourServiceHandler(repo *repository.TourRepository) *TourServiceHandler {
+func NewTourServiceHandler(repo repository.TourRepositoryInterface) *TourServiceHandler {
 	return &TourServiceHandler{
 		repo: repo,
 	}
@@ -247,26 +247,26 @@ func (h *TourServiceHandler) GetKeyPoints(ctx context.Context, req *pb.GetKeyPoi
 	}
 
 	// Get the tour to check if user is the guide
-tour, _ := h.repo.GetTourByID(ctx, tourID)
+	tour, _ := h.repo.GetTourByID(ctx, tourID)
 
 	// Check if user has purchased the tour OR is the guide
 	isPurchased := false
 	isOwner := false
 	if req.UserId != "" {
-	    isPurchased, _ = h.repo.HasPurchased(ctx, req.UserId, tourID)
-	    if tour != nil {
-	        isOwner = tour.GuideID == req.UserId
-	    }
+		isPurchased, _ = h.repo.HasPurchased(ctx, req.UserId, tourID)
+		if tour != nil {
+			isOwner = tour.GuideID == req.UserId
+		}
 	}
-	
+
 	// If not purchased AND not the owner, only return first keypoint
 	protoKeypoints := make([]*pb.KeyPoint, 0)
 	if !isPurchased && !isOwner && len(keypoints) > 0 {
-	    protoKeypoints = append(protoKeypoints, mapKeyPointToProto(keypoints[0]))
+		protoKeypoints = append(protoKeypoints, mapKeyPointToProto(keypoints[0]))
 	} else {
-	    for _, kp := range keypoints {
-	        protoKeypoints = append(protoKeypoints, mapKeyPointToProto(kp))
-	    }
+		for _, kp := range keypoints {
+			protoKeypoints = append(protoKeypoints, mapKeyPointToProto(kp))
+		}
 	}
 
 	return &pb.KeyPointsResponse{
@@ -711,9 +711,8 @@ func (h *TourServiceHandler) CheckProximity(ctx context.Context, req *pb.CheckPr
 
 		// Calculate distance
 		distance := calculateDistance(req.CurrentLatitude, req.CurrentLongitude, kp.Latitude, kp.Longitude)
-		log.Printf("Distance check - Tourist: (%.6f, %.6f), Keypoint '%s': (%.6f, %.6f), Distance: %.2f meters", 
-    			req.CurrentLatitude, req.CurrentLongitude, kp.Name, kp.Latitude, kp.Longitude, distance)
-
+		log.Printf("Distance check - Tourist: (%.6f, %.6f), Keypoint '%s': (%.6f, %.6f), Distance: %.2f meters",
+			req.CurrentLatitude, req.CurrentLongitude, kp.Name, kp.Latitude, kp.Longitude, distance)
 
 		// If within 50 meters
 		if distance <= 50 {
